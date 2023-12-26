@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">Home TEST111111111111111111111111111</router-link> |
+      <router-link to="/">Home 一个账号发布多个github pages测试</router-link> |
       <router-link to="/about">About</router-link>
     </nav>
     <router-view/>
