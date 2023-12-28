@@ -1,8 +1,27 @@
 <template>
-  <div style="margin-top: 50px">
+  <div style="margin-top: 30px">
     <div class="title">Autonomous Driving Dataset</div>
     <!-- <span>请选择显示的列:</span> -->
-    <a-form-model
+    <div style="padding: 1% 5%">
+      <div>
+        <a-checkbox
+          :indeterminate="indeterminate"
+          :checked="checkAll"
+          @change="onCheckAllChange"
+        >
+          Check all
+        </a-checkbox>
+      </div>
+      <br />
+      <a-checkbox-group
+        v-model="checkedList"
+        :options="plainOptions"
+        @change="onChange"
+      >
+        <span slot="label" slot-scope="{ value }">{{ value }}</span>
+      </a-checkbox-group>
+    </div>
+    <!-- <a-form-model
       :model="form"
       labelAlign="left"
       style="margin: 30px"
@@ -27,9 +46,9 @@
           </a-select-option>
         </a-select>
       </a-form-model-item>
-    </a-form-model>
+    </a-form-model> -->
     <a-table
-      style="margin: 20px; width: 98%"
+      style="margin: 0 5%; width: 90%"
       :data-source="data"
       :columns="columns"
       :rowKey="
@@ -74,7 +93,7 @@
         <a-button
           size="small"
           style="width: 90px"
-          @click="() => handleReset(clearFilters)"
+          @click="() => handleReset(clearFilters,column.dataIndex)"
         >
           Reset
         </a-button>
@@ -139,7 +158,7 @@ const columns = [
     dataIndex: "id",
     key: "id",
     ellipsis: true,
-    width: 150,
+    width: 200,
     fixed: "left",
     // defaultSortOrder: "descend",
     sorter: (a, b) => a.id.localeCompare(b.id),
@@ -307,7 +326,7 @@ const columns = [
     title: "Sensortypes",
     dataIndex: "sensors",
     key: "sensors",
-    width: 300,
+    width: 320,
     // scopedSlots: { customRender: "tags" },
     // defaultSortOrder: "descend",
     // sorter: (a, b) => a.sensors.localeCompare(b.sensors),
@@ -344,7 +363,7 @@ const columns = [
     key: "relatedPaper",
     ellipsis: true,
     width: 200,
-    fixed: "right",
+    // fixed: "right",
     // defaultSortOrder: "descend",
     // sorter: (a, b) => a.relatedPaper.localeCompare(b.relatedPaper),
     scopedSlots: {
@@ -359,10 +378,37 @@ const columns = [
     //     .includes(value.toLowerCase()),
   },
 ];
-
+const plainOptions = [
+{ label: 'Name', value: 'id', disabled: true },
+{ label: 'N° Citations', value: 'citationCount',disabled: false },
+{ label: 'Size [h]', value: 'size_hours',disabled: false },
+{ label: 'Size [GB]', value: 'size_storage',disabled: false },
+{ label: 'Frames', value: 'frames',disabled: false },
+{ label: 'N° Scenes', value: 'numberOfScenes',disabled: false },
+{ label: 'Scene Length [s]', value: 'lengthOfScenes',disabled: false },
+{ label: 'Sensortypes', value: 'sensors',disabled: false },
+{ label: 'Licensing', value: 'licensing',disabled: false },
+{ label: 'Related Paper', value: 'relatedPaper',disabled: false },
+];
+const defaultCheckedList = [
+  "id",
+  "citationCount",
+  "size_hours",
+  "size_storage",
+  "frames",
+  "numberOfScenes",
+  "lengthOfScenes",
+  "sensors",
+  "licensing",
+  "relatedPaper",
+];
 export default {
   data() {
     return {
+      checkedList: defaultCheckedList,
+      indeterminate: true,
+      checkAll: false,
+      plainOptions,
       columnsSelect: [
         {
           index: 1,
@@ -465,20 +511,42 @@ export default {
     });
   },
   methods: {
-    handleChange() {
-      console.log("this.form.arr===============", this.form.arr);
-      // console.log('columns===============',columns);
-      // arr.filter(item => arrtemp.includes(item.key))
+    onChange(checkedList) {
+      this.indeterminate =
+        !!checkedList.length && checkedList.length < plainOptions.length;
+      this.checkAll = checkedList.length === plainOptions.length;
+      console.log("checkedList================", checkedList);
       this.columns = columns.filter((item) => {
-        console.log(
-          "item.key============",
-          item.key,
-          this.form.arr.includes(item.key)
-        );
-        return this.form.arr.includes(item.key);
+        return checkedList.includes(item.key);
       });
-      console.log("this.columns====================", this.columns);
     },
+    onCheckAllChange(e) {
+      Object.assign(this, {
+        checkedList: e.target.checked ? defaultCheckedList : [],
+        indeterminate: false,
+        checkAll: e.target.checked,
+      });
+      if(this.checkedList.length===0){
+        this.checkedList.push('id')
+      }
+      this.columns = columns.filter((item) => {
+        return this.checkedList.includes(item.key);
+      });
+    },
+    // handleChange() {
+    //   console.log("this.form.arr===============", this.form.arr);
+    //   // console.log('columns===============',columns);
+    //   // arr.filter(item => arrtemp.includes(item.key))
+    //   this.columns = columns.filter((item) => {
+    //     console.log(
+    //       "item.key============",
+    //       item.key,
+    //       this.form.arr.includes(item.key)
+    //     );
+    //     return this.form.arr.includes(item.key);
+    //   });
+    //   console.log("this.columns====================", this.columns);
+    // },
     tagColor(tag) {
       // console.log("tag===================", tag);
       switch (tag.trim()) {
@@ -499,12 +567,27 @@ export default {
     handleSearch(selectedKeys, confirm, dataIndex) {
       confirm();
       this.searchText = selectedKeys[0];
+      console.log('this.searchText,dataIndex==================',this.searchText,dataIndex)
       this.searchedColumn = dataIndex;
+      console.log('this.searchedColumn==================',this.searchedColumn )
+      for(let item of this.plainOptions){
+        // console.log('item.value,dataIndex=============',item,item.value,dataIndex)
+        if(item.value===dataIndex){
+          console.log('item.value,dataIndex=============',item.value,dataIndex)
+          item.disabled=true
+        }
+      }
     },
-
-    handleReset(clearFilters) {
+    handleReset(clearFilters, dataIndex) {
       clearFilters();
       this.searchText = "";
+      for(let item of this.plainOptions){
+        // console.log('item.value,dataIndex=============',item,item.value,dataIndex)
+        if(item.value===dataIndex){
+          console.log('item.value,dataIndex=============',item.value,dataIndex)
+          item.disabled=false
+        }
+      }
     },
   },
 };

@@ -1,7 +1,11 @@
 <template>
   <a-layout>
     <div class="logo">
-      <a href="https://opendrivelab.com/" target="_blank" rel="noopener noreferrer">
+      <a
+        href="https://opendrivelab.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <img src="../assets/OpenDriveLab.png" alt="Logo"
       /></a>
     </div>
@@ -11,7 +15,9 @@
           <!-- <a href="" rel="noopener noreferrer">
             <a-icon type="database" />AD-Datasets
           </a> -->
-          <router-link to="/"> <a-icon type="database" />AD-Datasets</router-link>
+          <router-link to="/">
+            <a-icon type="database" />AD-Datasets</router-link
+          >
         </a-menu-item>
         <a-menu-item key="Sponsor">
           <a
@@ -48,7 +54,7 @@ export default {
   /* border-bottom: 1px solid #e8e8e8; */
   box-shadow: none;
 }
-.ant-layout {
+/* .ant-layout {
   display: flex;
   flex: auto;
   flex-direction: row;
@@ -70,8 +76,41 @@ export default {
   height: 50px;
   padding: 0 24px;
   img {
-    height: 32px;
-    width: 200px;
+    height: 25px;
+    width: 160px;
+  }
+} */
+.ant-layout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between; /* 让子元素分别靠左边和右边 */
+  align-items: center;
+  min-height: 0;
+  background: #fff;
+  padding: 0 5%; /* 左右边距为5% */
+}
+
+.logo {
+  display: flex;
+  justify-content: flex-start; /* 让logo靠左边 */
+  align-items: center;
+  height: 50px;
+  img {
+    height: 25px;
+    width: 160px;
   }
 }
+
+.ant-layout-header {
+  line-height: 64px;
+  background: #fff;
+  padding: 0;
+}
+/* .layout-header {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+  height: 64px;
+  padding: 0 5%; 
+} */
 </style>
