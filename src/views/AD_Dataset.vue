@@ -58,6 +58,18 @@
       "
       :scroll="{ x: 1200 }"
     >
+    <template slot="Name" slot-scope="text,record">
+      <a-tooltip placement="topLeft">
+        <template slot="title">
+          <a :href="record.href" target="_blank" rel="noopener noreferrer">{{
+            text
+          }}</a>
+        </template>
+        <a :href="record.href" target="_blank" rel="noopener noreferrer">{{
+          text
+        }}</a>
+      </a-tooltip>
+    </template>
       <div
         slot="filterDropdown"
         slot-scope="{
@@ -165,7 +177,7 @@ const columns = [
     scopedSlots: {
       filterDropdown: "filterDropdown",
       filterIcon: "filterIcon",
-      customRender: "customRender",
+      customRender: "Name",
     },
     onFilter: (value, record) =>
       record.id.toString().toLowerCase().includes(value.toLowerCase()),
@@ -405,6 +417,7 @@ const defaultCheckedList = [
 export default {
   data() {
     return {
+      selectedItem:['id'],
       checkedList: defaultCheckedList,
       indeterminate: true,
       checkAll: false,
@@ -515,7 +528,7 @@ export default {
       this.indeterminate =
         !!checkedList.length && checkedList.length < plainOptions.length;
       this.checkAll = checkedList.length === plainOptions.length;
-      console.log("checkedList================", checkedList);
+      // console.log("checkedList================", checkedList);
       this.columns = columns.filter((item) => {
         return checkedList.includes(item.key);
       });
@@ -526,9 +539,11 @@ export default {
         indeterminate: false,
         checkAll: e.target.checked,
       });
+      // console.log('this.checkedList,this.selectedItem=================',this.checkedList,this.selectedItem)
       if(this.checkedList.length===0){
-        this.checkedList.push('id')
+        this.checkedList.push(...this.selectedItem)
       }
+      // console.log('this.checkedList=================',this.checkedList)
       this.columns = columns.filter((item) => {
         return this.checkedList.includes(item.key);
       });
@@ -567,13 +582,15 @@ export default {
     handleSearch(selectedKeys, confirm, dataIndex) {
       confirm();
       this.searchText = selectedKeys[0];
-      console.log('this.searchText,dataIndex==================',this.searchText,dataIndex)
+      // console.log('this.searchText,dataIndex==================',this.searchText,dataIndex)
       this.searchedColumn = dataIndex;
-      console.log('this.searchedColumn==================',this.searchedColumn )
+      this.selectedItem.push(dataIndex)
+      // console.log('this.selectedItem==============',this.selectedItem)
+      // console.log('this.searchedColumn==================',this.searchedColumn )
       for(let item of this.plainOptions){
         // console.log('item.value,dataIndex=============',item,item.value,dataIndex)
         if(item.value===dataIndex){
-          console.log('item.value,dataIndex=============',item.value,dataIndex)
+          // console.log('item.value,dataIndex=============',item.value,dataIndex)
           item.disabled=true
         }
       }
@@ -583,11 +600,15 @@ export default {
       this.searchText = "";
       for(let item of this.plainOptions){
         // console.log('item.value,dataIndex=============',item,item.value,dataIndex)
-        if(item.value===dataIndex){
+        if(item.value!=='id'&&item.value===dataIndex){
           console.log('item.value,dataIndex=============',item.value,dataIndex)
           item.disabled=false
         }
       }
+      this.selectedItem=this.selectedItem.filter((item)=>{
+        item.value==='id'||item!==dataIndex
+      })
+      // console.log('this.selectedItem==============',this.selectedItem)
     },
   },
 };
