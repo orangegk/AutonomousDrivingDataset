@@ -2,7 +2,7 @@
   <div style="margin-top: 30px">
     <div class="title">Autonomous Driving Dataset</div>
     <!-- <span>请选择显示的列:</span> -->
-    <div style="padding: 1% 5%">
+    <div style="padding: 1% 5%;line-height: 24px;">
       <div>
         <a-checkbox
           :indeterminate="indeterminate"
@@ -12,7 +12,7 @@
           Check all
         </a-checkbox>
       </div>
-      <br />
+      <!-- <br /> -->
       <a-checkbox-group
         v-model="checkedList"
         :options="plainOptions"
@@ -170,7 +170,7 @@ const columns = [
     dataIndex: "id",
     key: "id",
     ellipsis: true,
-    width: 200,
+    width: 150,
     fixed: "left",
     // defaultSortOrder: "descend",
     sorter: (a, b) => a.id.localeCompare(b.id),
@@ -623,7 +623,7 @@ export default {
   padding-top: 10px;
   padding-bottom: 10px;
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 1rem;
   font-weight: bold;
   text-align: center;
 }
@@ -633,5 +633,8 @@ export default {
 
 .table-operations > button {
   margin-right: 8px;
+}
+.ant-checkbox-group{
+  line-height: 2.5;
 }
 </style>

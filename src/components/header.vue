@@ -5,6 +5,7 @@
         href="https://opendrivelab.com/"
         target="_blank"
         rel="noopener noreferrer"
+        style="display: flex; justify-content: center; align-items: center"
       >
         <img src="../assets/OpenDriveLab.png" alt="Logo"
       /></a>
